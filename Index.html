@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Libertario — Dashboard CR 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Georgia',serif; background:#f0ece4; color:#1a2b5e; }
+
+.top-bar { background:#1a2b5e; color:#f0ece4; padding:18px 40px; display:flex; align-items:center; justify-content:space-between; }
+.top-bar .brand { font-size:11px; letter-spacing:3px; text-transform:uppercase; opacity:.7; }
+.top-bar .title { font-size:17px; }
+
+.nav { background:white; border-bottom:1px solid rgba(26,43,94,.1); display:flex; padding:0 40px; }
+.nav-btn { padding:15px 28px; font-family:'Georgia',serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; border:none; background:none; color:#1a2b5e; opacity:.4; cursor:pointer; border-bottom:3px solid transparent; transition:all .2s; }
+.nav-btn.active { opacity:1; border-bottom-color:#1a2b5e; }
+.nav-btn:hover { opacity:.75; }
+
+.main { max-width:1060px; margin:0 auto; padding:40px 20px; }
+.view { display:none; }
+.view.active { display:block; }
+
+.slabel { font-size:10px; letter-spacing:4px; text-transform:uppercase; opacity:.4; margin-bottom:12px; margin-top:36px; }
+.slabel:first-child { margin-top:0; }
+
+.tbl { width:100%; border-collapse:collapse; font-size:13px; background:white; border-radius:8px; overflow:hidden; margin-bottom:8px; }
+.tbl th { background:#1a2b5e; color:#f0ece4; padding:11px 16px; text-align:left; font-size:11px; letter-spacing:1px; font-weight:normal; }
+.tbl td { padding:11px 16px; border-bottom:1px solid rgba(26,43,94,.07); vertical-align:middle; }
+.tbl tr:last-child td { border-bottom:none; }
+.tbl tr:nth-child(even) td { background:rgba(26,43,94,.03); }
+.tbl td:first-child { font-weight:bold; }
+
+.tag { display:inline-block; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:bold; white-space:nowrap; }
+.g { background:#d4edda; color:#1a6632; }
+.a { background:#fff3cd; color:#856404; }
+.r { background:#fde8e8; color:#9b1c1c; }
+
+/* TABS */
+.tab-row { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+.pill { padding:8px 22px; border-radius:20px; border:1.5px solid rgba(26,43,94,.2); background:none; font-family:'Georgia',serif; font-size:13px; color:#1a2b5e; opacity:.5; cursor:pointer; transition:all .2s; }
+.pill.active { background:#1a2b5e; color:#f0ece4; opacity:1; border-color:#1a2b5e; }
+.pill:hover:not(.active) { opacity:.75; }
+.pblock { display:none; }
+.pblock.active { display:block; }
+
+.mpill { padding:6px 16px; border-radius:20px; border:1.5px solid rgba(201,123,42,.4); background:none; font-family:'Georgia',serif; font-size:12px; color:#1a2b5e; opacity:.5; cursor:pointer; transition:all .2s; }
+.mpill.active { background:#c97b2a; color:#fff; opacity:1; border-color:#c97b2a; }
+.mpill:hover:not(.active) { opacity:.75; }
+
+/* KPI */
+.krow { display:grid; gap:12px; margin-bottom:20px; }
+.k4 { grid-template-columns:repeat(4,1fr); }
+.kcard { background:white; border-radius:8px; padding:20px 18px; border-top:3px solid rgba(26,43,94,.2); }
+.kcard.up   { border-top-color:#2a7d4f; }
+.kcard.warn { border-top-color:#c97b2a; }
+.kcard.down { border-top-color:#c0392b; }
+.kcard .kval { font-size:26px; font-weight:bold; line-height:1; margin-bottom:4px; }
+.kcard .klbl { font-size:11px; text-transform:uppercase; letter-spacing:1px; opacity:.45; }
+.kcard .kchg { font-size:12px; margin-top:6px; }
+.chg-up   { color:#2a7d4f; }
+.chg-down { color:#c0392b; }
+.chg-warn { color:#c97b2a; }
+.chg-neu  { color:#888; }
+
+/* CHARTS — fixed height containers stop the jumping */
+.chart-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+.chart-box { background:white; border-radius:8px; padding:20px 18px 16px; height:220px; display:flex; flex-direction:column; }
+.chart-box .ctitle { font-size:10px; letter-spacing:3px; text-transform:uppercase; opacity:.4; margin-bottom:10px; flex-shrink:0; }
+.chart-box .chart-wrap { flex:1; position:relative; min-height:0; }
+.chart-box canvas { position:absolute; inset:0; }
+
+/* TOP CONTENIDOS */
+.top-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px; }
+.top-card { background:white; border-radius:8px; overflow:hidden; }
+.top-card .tc-badge { padding:8px 14px; font-size:10px; letter-spacing:2px; text-transform:uppercase; font-weight:bold; }
+.tc-reel  { background:#1a2b5e; color:#f0ece4; }
+.tc-post  { background:#2a7d4f; color:#f0ece4; }
+.tc-tiktok{ background:#111; color:#f0ece4; }
+.top-card .tc-body { padding:16px 18px; }
+.top-card .tc-desc { font-size:14px; line-height:1.5; margin-bottom:12px; min-height:44px; }
+.top-card .tc-stats { display:flex; gap:16px; }
+.top-card .tc-stat .tsv { font-size:20px; font-weight:bold; }
+.top-card .tc-stat .tsl { font-size:10px; text-transform:uppercase; letter-spacing:1px; opacity:.45; }
+
+/* TRIMESTRAL */
+.wins-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:6px; }
+.win-card  { background:#1a2b5e; color:#f0ece4; border-radius:8px; padding:26px 22px; }
+.win-card .wnum   { font-size:38px; font-weight:bold; line-height:1; }
+.win-card .wlabel { font-size:12px; opacity:.7; margin-top:8px; line-height:1.5; }
+.win-card .wsub   { font-size:11px; opacity:.5; margin-top:4px; }
+
+.q-plat { background:white; border-radius:8px; padding:24px; margin-bottom:12px; }
+.q-plat h3 { font-size:10px; letter-spacing:3px; text-transform:uppercase; opacity:.4; margin-bottom:16px; }
+.q-plat-body { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.q-col h4   { font-size:12px; letter-spacing:1px; text-transform:uppercase; opacity:.4; margin-bottom:10px; }
+.q-stat     { margin-bottom:8px; font-size:13px; line-height:1.5; }
+.q-stat strong { font-size:15px; }
+
+/* TRIM mini charts */
+.trim-charts { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:28px; }
+.trim-cbox { background:white; border-radius:8px; padding:18px; height:200px; display:flex; flex-direction:column; }
+.trim-cbox .ctitle { font-size:10px; letter-spacing:3px; text-transform:uppercase; opacity:.4; margin-bottom:10px; flex-shrink:0; }
+.trim-cbox .chart-wrap { flex:1; position:relative; min-height:0; }
+.trim-cbox canvas { position:absolute; inset:0; }
+
+footer { text-align:center; margin-top:60px; padding:20px; font-size:11px; opacity:.3; letter-spacing:2px; text-transform:uppercase; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="brand">· Libertario Coffee Co. & Roasters ·</div>
+  <div class="title">Dashboard de Métricas — Costa Rica 2026</div>
+  <div class="brand">Enero – Marzo</div>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="showView('anual',this)">Objetivos Anuales</button>
+  <button class="nav-btn" onclick="showView('trim',this)">Trimestral</button>
+  <button class="nav-btn" onclick="showView('mensual',this)">Mensual</button>
+</nav>
+
+<div class="main">
+
+<!-- ═══════ OBJETIVOS ANUALES ═══════ -->
+<div id="view-anual" class="view active">
+  <div style="font-size:12px;opacity:.5;margin-bottom:22px;">Ritmo esperado al cerrar Q1: 25% de cada meta anual. Más del 25% = adelantado.</div>
+  <div class="tab-row">
+    <button class="pill active" onclick="showTab('ap','ig',this)">Instagram</button>
+    <button class="pill" onclick="showTab('ap','pauta',this)">Pauta Meta</button>
+    <button class="pill" onclick="showTab('ap','tt',this)">TikTok</button>
+  </div>
+  <div id="ap-ig" class="pblock active">
+    <table class="tbl">
+      <thead><tr><th>Métrica</th><th>Meta anual 2026</th><th>Logrado a hoy</th><th>Avance</th></tr></thead>
+      <tbody>
+        <tr><td>Seguidores (fin de año)</td><td>11.000</td><td>10.462</td><td><span class="tag g">95% — muy adelantado</span></td></tr>
+        <tr><td>Interacciones totales</td><td>10.300</td><td>8.357</td><td><span class="tag g">81% — muy adelantado</span></td></tr>
+        <tr><td>Reach acumulado</td><td>700.000</td><td>210.182</td><td><span class="tag g">30% — en ritmo</span></td></tr>
+        <tr><td>Views acumuladas</td><td>2.640.000</td><td>534.972</td><td><span class="tag a">20% — rezagado</span></td></tr>
+        <tr><td>Engagement Rate prom.</td><td>1,20%</td><td>1,66%</td><td><span class="tag g">Superado</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div id="ap-pauta" class="pblock">
+    <div style="font-size:12px;opacity:.5;margin-bottom:14px;">Las metas de pauta son mensuales. Se compara el promedio mensual del Q1 vs la meta.</div>
+    <table class="tbl">
+      <thead><tr><th>Métrica</th><th>Meta mensual 2026</th><th>Logrado Q1 (3 meses)</th><th>Estado</th></tr></thead>
+      <tbody>
+        <tr><td>Inversión (COP)</td><td>180K–220K/mes</td><td>$1.714.243 total · 571K prom.</td><td><span class="tag r">Sobre rango — muy variable</span></td></tr>
+        <tr><td>Clics</td><td>3.000–3.500/mes</td><td>6.216 total · 2.072 prom.</td><td><span class="tag a">Bajo rango en promedio</span></td></tr>
+        <tr><td>CTR promedio</td><td>1,8%–2,3%</td><td>1,62% prom. (marzo: 2,20%)</td><td><span class="tag a">Bajo en promedio; mejorando</span></td></tr>
+        <tr><td>CPC (COP)</td><td>250–300</td><td>340 (marzo)</td><td><span class="tag r">Sobre rango — a optimizar</span></td></tr>
+        <tr><td>Campañas activas</td><td>8–10</td><td>8–10</td><td><span class="tag g">En meta</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div id="ap-tt" class="pblock">
+    <table class="tbl">
+      <thead><tr><th>Métrica</th><th>Meta anual 2026</th><th>Logrado a hoy</th><th>Avance</th></tr></thead>
+      <tbody>
+        <tr><td>Views</td><td>240.000–420.000</td><td>93.177</td><td><span class="tag g">31–39%</span></td></tr>
+        <tr><td>Likes</td><td>7.200–12.000</td><td>3.018</td><td><span class="tag g">25–42%</span></td></tr>
+        <tr><td>Seguidores nuevos</td><td>960–1.800</td><td>555</td><td><span class="tag g">31–58%</span></td></tr>
+        <tr><td>Shares</td><td>180–300</td><td>43</td><td><span class="tag a">14–24% — rezagado</span></td></tr>
+        <tr><td>Comments</td><td>96–180</td><td>23</td><td><span class="tag a">13–24% — rezagado</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════ TRIMESTRAL ═══════ -->
+<div id="view-trim" class="view">
+  <div class="slabel">Wins del trimestre</div>
+  <div class="wins-grid">
+    <div class="win-card">
+      <div class="wnum">10.462</div>
+      <div class="wlabel">Seguidores en Instagram</div>
+      <div class="wsub">95% de la meta anual en solo 3 meses</div>
+    </div>
+    <div class="win-card">
+      <div class="wnum">8.357</div>
+      <div class="wlabel">Interacciones acumuladas en Instagram</div>
+      <div class="wsub">81% de la meta anual — muy adelantado</div>
+    </div>
+    <div class="win-card">
+      <div class="wnum">+700%</div>
+      <div class="wlabel">Seguidores nuevos en TikTok (marzo)</div>
+      <div class="wsub">+598% en views · canal con tracción real</div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:28px;">Evolución visual Q1</div>
+  <div class="trim-charts">
+    <div class="trim-cbox">
+      <div class="ctitle">Instagram — Views mensuales</div>
+      <div class="chart-wrap"><canvas id="trim-ig-views"></canvas></div>
+    </div>
+    <div class="trim-cbox">
+      <div class="ctitle">Instagram — Interacciones mensuales</div>
+      <div class="chart-wrap"><canvas id="trim-ig-int"></canvas></div>
+    </div>
+    <div class="trim-cbox">
+      <div class="ctitle">TikTok — Views mensuales</div>
+      <div class="chart-wrap"><canvas id="trim-tt-views"></canvas></div>
+    </div>
+    <div class="trim-cbox">
+      <div class="ctitle">Pauta Meta — Clics mensuales</div>
+      <div class="chart-wrap"><canvas id="trim-p-clics"></canvas></div>
+    </div>
+  </div>
+
+  <div class="slabel">Análisis por plataforma + proyección próximo trimestre</div>
+  <div class="q-plat">
+    <h3>Instagram</h3>
+    <div class="q-plat-body">
+      <div class="q-col">
+        <h4>Qué pasó este trimestre</h4>
+        <div class="q-stat">Views crecieron cada mes: 128K → 178K → <strong>228K</strong>. Tendencia positiva.</div>
+        <div class="q-stat">Interacciones se triplicaron: 1.347 → 2.710 → <strong>4.300</strong>. El contenido conecta.</div>
+        <div class="q-stat">Seguidores ganaron ritmo sostenido: +393 en feb, <strong>+991 en marzo</strong>.</div>
+        <div class="q-stat" style="color:#c97b2a;">Reach lleva 3 meses cayendo: 73K → 71K → 65K. El alcance orgánico se contrae.</div>
+        <div class="q-stat" style="color:#c97b2a;">El 63,5% de los views viene de pauta — dependencia creciente.</div>
+      </div>
+      <div class="q-col">
+        <h4>Foco para el próximo trimestre</h4>
+        <div class="q-stat">Recuperar reach orgánico — más Reels con buen hook y mínimo 4 posts/mes en feed.</div>
+        <div class="q-stat">Mantener el ritmo de interacciones: meta Q2 de 3.500–4.000/mes.</div>
+        <div class="q-stat">Views objetivo próximo trimestre: 230K–250K/mes para estar en ritmo anual.</div>
+        <div class="q-stat">Aprovechar el momentum de seguidores — llegar a 11.000 (meta anual) antes de cerrar Q2.</div>
+      </div>
+    </div>
+  </div>
+  <div class="q-plat">
+    <h3>Pauta Meta</h3>
+    <div class="q-plat-body">
+      <div class="q-col">
+        <h4>Qué pasó este trimestre</h4>
+        <div class="q-stat">Marzo tuvo la mejor eficiencia en clics: <strong>CTR 2,20%</strong> y 2.725 clics.</div>
+        <div class="q-stat">Inversión total Q1: <strong>$1.714.243 COP</strong> (distribución muy irregular entre meses).</div>
+        <div class="q-stat" style="color:#c97b2a;">CPC subió a $340 en marzo — por encima de la meta de 250–300 COP.</div>
+        <div class="q-stat" style="color:#c97b2a;">Pauta gestionada desde "Promocionar" en app, sin estrategia en Meta Ads Manager.</div>
+      </div>
+      <div class="q-col">
+        <h4>Foco para el próximo trimestre</h4>
+        <div class="q-stat">Migrar a Meta Ads Manager — control real de segmentación y presupuesto.</div>
+        <div class="q-stat">Objetivo de CPC: bajar a 250–300 COP.</div>
+        <div class="q-stat">Estabilizar inversión mensual en 180K–220K COP.</div>
+        <div class="q-stat">Meta de clics próximo trimestre: 2.800–3.200/mes.</div>
+      </div>
+    </div>
+  </div>
+  <div class="q-plat">
+    <h3>TikTok</h3>
+    <div class="q-plat-body">
+      <div class="q-col">
+        <h4>Qué pasó este trimestre</h4>
+        <div class="q-stat">Marzo despegó: <strong>65.243 views</strong> (+598% vs feb) y <strong>416 nuevos seguidores</strong> (+700%).</div>
+        <div class="q-stat">Likes crecieron fuerte en marzo: <strong>1.905</strong> (+257% vs feb).</div>
+        <div class="q-stat" style="color:#c97b2a;">Enero y febrero fueron débiles (18K y 9K views) — el pico de marzo fue puntual, no una tendencia aún.</div>
+        <div class="q-stat" style="color:#c97b2a;">Shares se mantienen bajos — poca capacidad de viralización.</div>
+      </div>
+      <div class="q-col">
+        <h4>Foco para el próximo trimestre</h4>
+        <div class="q-stat">Identificar qué generó el spike de marzo y replicarlo de forma consistente.</div>
+        <div class="q-stat">Meta de views próximo trimestre: 20.000–35.000/mes de forma estable.</div>
+        <div class="q-stat">Fortalecer la estrategia de shares — contenido que invite a compartir.</div>
+        <div class="q-stat">Meta de seguidores nuevos: 80–150/mes de forma sostenida.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ MENSUAL ═══════ -->
+<div id="view-mensual" class="view">
+  <div class="tab-row" style="margin-bottom:16px;">
+    <button class="pill active" onclick="showMPlat('ig',this)">Instagram</button>
+    <button class="pill" onclick="showMPlat('pauta',this)">Pauta Meta</button>
+    <button class="pill" onclick="showMPlat('tt',this)">TikTok</button>
+  </div>
+
+  <!-- INSTAGRAM -->
+  <div id="mp-ig" class="pblock active">
+    <div class="tab-row" style="margin-bottom:20px;">
+      <button class="mpill active" onclick="setMonth('ig','ene',this)">Enero</button>
+      <button class="mpill" onclick="setMonth('ig','feb',this)">Febrero</button>
+      <button class="mpill" onclick="setMonth('ig','mar',this)">Marzo</button>
+    </div>
+    <div class="krow k4">
+      <div class="kcard" id="ig-k0"><div class="kval" id="ig-k0v"></div><div class="klbl" id="ig-k0l"></div><div class="kchg" id="ig-k0c"></div></div>
+      <div class="kcard" id="ig-k1"><div class="kval" id="ig-k1v"></div><div class="klbl" id="ig-k1l"></div><div class="kchg" id="ig-k1c"></div></div>
+      <div class="kcard" id="ig-k2"><div class="kval" id="ig-k2v"></div><div class="klbl" id="ig-k2l"></div><div class="kchg" id="ig-k2c"></div></div>
+      <div class="kcard" id="ig-k3"><div class="kval" id="ig-k3v"></div><div class="klbl" id="ig-k3l"></div><div class="kchg" id="ig-k3c"></div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-box"><div class="ctitle">Views — Ene a Mar</div><div class="chart-wrap"><canvas id="ig-views"></canvas></div></div>
+      <div class="chart-box"><div class="ctitle">Interacciones — Ene a Mar</div><div class="chart-wrap"><canvas id="ig-int"></canvas></div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-box"><div class="ctitle">Accounts Reached — Ene a Mar</div><div class="chart-wrap"><canvas id="ig-reach"></canvas></div></div>
+      <div class="chart-box"><div class="ctitle">Seguidores nuevos — Ene a Mar</div><div class="chart-wrap"><canvas id="ig-seg"></canvas></div></div>
+    </div>
+
+    <div class="slabel" style="margin-top:28px;">Top contenidos del mes</div>
+    <div class="top-grid" id="ig-top-grid">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+  <!-- PAUTA META -->
+  <div id="mp-pauta" class="pblock">
+    <div class="tab-row" style="margin-bottom:20px;">
+      <button class="mpill active" onclick="setMonth('p','ene',this)">Enero</button>
+      <button class="mpill" onclick="setMonth('p','feb',this)">Febrero</button>
+      <button class="mpill" onclick="setMonth('p','mar',this)">Marzo</button>
+    </div>
+    <div class="krow k4">
+      <div class="kcard" id="p-k0"><div class="kval" id="p-k0v"></div><div class="klbl" id="p-k0l"></div><div class="kchg" id="p-k0c"></div></div>
+      <div class="kcard" id="p-k1"><div class="kval" id="p-k1v"></div><div class="klbl" id="p-k1l"></div><div class="kchg" id="p-k1c"></div></div>
+      <div class="kcard" id="p-k2"><div class="kval" id="p-k2v"></div><div class="klbl" id="p-k2l"></div><div class="kchg" id="p-k2c"></div></div>
+      <div class="kcard" id="p-k3"><div class="kval" id="p-k3v"></div><div class="klbl" id="p-k3l"></div><div class="kchg" id="p-k3c"></div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-box"><div class="ctitle">Inversión COP — Ene a Mar</div><div class="chart-wrap"><canvas id="p-inv"></canvas></div></div>
+      <div class="chart-box"><div class="ctitle">Clics — Ene a Mar</div><div class="chart-wrap"><canvas id="p-clics"></canvas></div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-box"><div class="ctitle">CTR % — Ene a Mar</div><div class="chart-wrap"><canvas id="p-ctr"></canvas></div></div>
+      <div class="chart-box"><div class="ctitle">Impresiones vs Alcance — Ene a Mar</div><div class="chart-wrap"><canvas id="p-imp"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- TIKTOK -->
+  <div id="mp-tt" class="pblock">
+    <div class="tab-row" style="margin-bottom:20px;">
+      <button class="mpill active" onclick="setMonth('tt','ene',this)">Enero</button>
+      <button class="mpill" onclick="setMonth('tt','feb',this)">Febrero</button>
+      <button class="mpill" onclick="setMonth('tt','mar',this)">Marzo</button>
+    </div>
+    <div class="krow k4">
+      <div class="kcard" id="tt-k0"><div class="kval" id="tt-k0v"></div><div class="klbl" id="tt-k0l"></div><div class="kchg" id="tt-k0c"></div></div>
+      <div class="kcard" id="tt-k1"><div class="kval" id="tt-k1v"></div><div class="klbl" id="tt-k1l"></div><div class="kchg" id="tt-k1c"></div></div>
+      <div class="kcard" id="tt-k2"><div class="kval" id="tt-k2v"></div><div class="klbl" id="tt-k2l"></div><div class="kchg" id="tt-k2c"></div></div>
+      <div class="kcard" id="tt-k3"><div class="kval" id="tt-k3v"></div><div class="klbl" id="tt-k3l"></div><div class="kchg" id="tt-k3c"></div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-box"><div class="ctitle">Views — Ene a Mar</div><div class="chart-wrap"><canvas id="tt-views"></canvas></div></div>
+      <div class="chart-box"><div class="ctitle">Likes — Ene a Mar</div><div class="chart-wrap"><canvas id="tt-likes"></canvas></div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-box"><div class="ctitle">Seguidores nuevos — Ene a Mar</div><div class="chart-wrap"><canvas id="tt-seg"></canvas></div></div>
+      <div class="chart-box"><div class="ctitle">Shares y Comments — Ene a Mar</div><div class="chart-wrap"><canvas id="tt-eng"></canvas></div></div>
+    </div>
+
+    <div class="slabel" style="margin-top:28px;">Top contenidos del mes</div>
+    <div class="top-grid" id="tt-top-grid"></div>
+  </div>
+
+</div><!-- /mensual -->
+
+<footer>Libertario Coffee Co. & Roasters · Costa Rica · Q1 2026</footer>
+</div>
+
+<script>
+/* ─── DATA ─── */
+const MONTHS = ['Enero','Febrero','Marzo'];
+const monthIdx = { ene:0, feb:1, mar:2 };
+
+const igKPI = {
+  ene:[
+    {v:'9.078',   l:'Seguidores',      c:'Inicio de año',              cls:'',     cc:'chg-neu'},
+    {v:'128.020', l:'Views',            c:'46,9% desde pauta',          cls:'',     cc:'chg-neu'},
+    {v:'73.053',  l:'Accounts Reached', c:'+35,6% vs diciembre',        cls:'up',   cc:'chg-up'},
+    {v:'1.347',   l:'Interacciones',    c:'~1,05% eng. rate',           cls:'',     cc:'chg-neu'},
+  ],
+  feb:[
+    {v:'9.471',   l:'Seguidores',      c:'+393 nuevos (+4,3%)',         cls:'up',   cc:'chg-up'},
+    {v:'178.418', l:'Views',            c:'+39,4% vs enero',            cls:'up',   cc:'chg-up'},
+    {v:'71.585',  l:'Accounts Reached', c:'-2,0% vs enero',             cls:'warn', cc:'chg-warn'},
+    {v:'2.710',   l:'Interacciones',    c:'+101,2% vs enero',           cls:'up',   cc:'chg-up'},
+  ],
+  mar:[
+    {v:'10.462',  l:'Seguidores',      c:'+991 nuevos (+10,5%)',        cls:'up',   cc:'chg-up'},
+    {v:'228.534', l:'Views',            c:'+28,1% vs febrero',          cls:'up',   cc:'chg-up'},
+    {v:'65.544',  l:'Accounts Reached', c:'-8,4% vs feb · 3 meses baja',cls:'down', cc:'chg-down'},
+    {v:'4.300',   l:'Interacciones',    c:'+58,7% vs febrero',          cls:'up',   cc:'chg-up'},
+  ]
+};
+
+const pKPI = {
+  ene:[
+    {v:'$687.926',l:'Inversión COP',    c:'Mes irregular',              cls:'warn', cc:'chg-warn'},
+    {v:'378.424', l:'Impresiones',      c:'Mayor volumen del trimestre', cls:'up',   cc:'chg-up'},
+    {v:'2.192',   l:'Clics',            c:'CTR: 1,96%',                 cls:'',     cc:'chg-neu'},
+    {v:'8',       l:'Campañas activas', c:'En meta',                    cls:'up',   cc:'chg-up'},
+  ],
+  feb:[
+    {v:'$158.710',l:'Inversión COP',    c:'-76,9% vs enero · mínimo Q1',cls:'warn', cc:'chg-warn'},
+    {v:'246.321', l:'Impresiones',      c:'-34,9% vs enero',            cls:'down', cc:'chg-down'},
+    {v:'1.299',   l:'Clics',            c:'CTR: 0,69% — peor del trim.',cls:'down', cc:'chg-down'},
+    {v:'10',      l:'Campañas activas', c:'Máximo del trimestre',       cls:'up',   cc:'chg-up'},
+  ],
+  mar:[
+    {v:'$867.607',l:'Inversión COP',    c:'+446,6% vs febrero',         cls:'warn', cc:'chg-warn'},
+    {v:'138.853', l:'Impresiones',      c:'-43,6% vs feb (más enfocado)',cls:'warn', cc:'chg-warn'},
+    {v:'2.725',   l:'Clics',            c:'CTR: 2,20% — mejor del trim.',cls:'up',  cc:'chg-up'},
+    {v:'$340',    l:'CPC (COP)',         c:'Sobre meta de 250–300',      cls:'down', cc:'chg-down'},
+  ]
+};
+
+const ttKPI = {
+  ene:[
+    {v:'18.592',l:'Views',              c:'Mes de arranque',            cls:'',     cc:'chg-neu'},
+    {v:'580',   l:'Likes',              c:'—',                          cls:'',     cc:'chg-neu'},
+    {v:'+87',   l:'Seguidores nuevos',  c:'—',                          cls:'',     cc:'chg-neu'},
+    {v:'5',     l:'Shares',             c:'Bajo — área de mejora',      cls:'warn', cc:'chg-warn'},
+  ],
+  feb:[
+    {v:'9.342', l:'Views',              c:'-49,8% vs enero',            cls:'down', cc:'chg-down'},
+    {v:'533',   l:'Likes',              c:'-8,1% vs enero',             cls:'down', cc:'chg-down'},
+    {v:'+52',   l:'Seguidores nuevos',  c:'-40,2% vs enero',            cls:'down', cc:'chg-down'},
+    {v:'20',    l:'Shares',             c:'+300% vs enero',             cls:'up',   cc:'chg-up'},
+  ],
+  mar:[
+    {v:'65.243',l:'Views',              c:'+598,5% vs febrero',         cls:'up',   cc:'chg-up'},
+    {v:'1.905', l:'Likes',              c:'+257,4% vs febrero',         cls:'up',   cc:'chg-up'},
+    {v:'+416',  l:'Seguidores nuevos',  c:'+700% vs febrero',           cls:'up',   cc:'chg-up'},
+    {v:'18',    l:'Shares',             c:'-10% vs feb · bajo',         cls:'warn', cc:'chg-warn'},
+  ]
+};
+
+const topContent = {
+  ig: {
+    ene:[
+      {tipo:'Reel',badge:'tc-reel',desc:'Lo cotidiano, vivido con propósito.',url:'https://www.instagram.com/reel/DTsi8QOjYun/',stat1:{v:'18.854',l:'Views'},stat2:{v:'144',l:'Likes'},stat3:{v:'14',l:'Saves'}},
+      {tipo:'Reel',badge:'tc-reel',desc:'Por momentos que conectan.',url:'https://www.instagram.com/reel/DUJAf53DRmo/',stat1:{v:'17.408',l:'Views'},stat2:{v:'110',l:'Likes'},stat3:{v:'21',l:'Saves'}},
+      {tipo:'Reel',badge:'tc-reel',desc:'Para los que saben que un café muy especial cambia el día.',url:'https://www.instagram.com/reel/DTJA1gbD5F4/',stat1:{v:'10.675',l:'Views'},stat2:{v:'114',l:'Likes'},stat3:{v:'9',l:'Saves'}},
+    ],
+    feb:[
+      {tipo:'Reel',badge:'tc-reel',desc:'El detalle también es parte del ritual.',url:'https://www.instagram.com/reel/DVBkgJBjbD-/',stat1:{v:'27.468',l:'Views'},stat2:{v:'513',l:'Likes'},stat3:{v:'74',l:'Saves'}},
+      {tipo:'Reel',badge:'tc-reel',desc:'El café es nuestra brújula. Nos recuerda elegir con intención.',url:'https://www.instagram.com/reel/DU6YdCqigwk/',stat1:{v:'16.573',l:'Views'},stat2:{v:'94',l:'Likes'},stat3:{v:'12',l:'Saves'}},
+      {tipo:'Reel',badge:'tc-reel',desc:'Nuestros BariRockStars saben qué café muy especial va con tu día.',url:'https://www.instagram.com/reel/DVJUj7ejRmI/',stat1:{v:'15.312',l:'Views'},stat2:{v:'131',l:'Likes'},stat3:{v:'18',l:'Saves'}},
+    ],
+    mar:[
+      {tipo:'Reel',badge:'tc-reel',desc:'Explorar también es parte de nuestra brújula. Nuevos varietales.',url:'https://www.instagram.com/reel/DVjIXL8DQtW/',stat1:{v:'41.705',l:'Views'},stat2:{v:'257',l:'Likes'},stat3:{v:'36',l:'Saves'}},
+      {tipo:'Reel',badge:'tc-reel',desc:'Cada café que elegimos tiene una razón de ser. Conocé los perfiles.',url:'https://www.instagram.com/reel/DWPSdfOiltg/',stat1:{v:'36.797',l:'Views'},stat2:{v:'446',l:'Likes'},stat3:{v:'36',l:'Saves'}},
+      {tipo:'Reel',badge:'tc-reel',desc:'Cada método, cada varietal, una excusa nueva para descubrir algo distinto.',url:'https://www.instagram.com/reel/DWb9omPCld7/',stat1:{v:'29.902',l:'Views'},stat2:{v:'146',l:'Likes'},stat3:{v:'13',l:'Saves'}},
+    ]
+  },
+  tt: {
+    ene:[
+      {tipo:'TikTok',badge:'tc-tiktok',desc:'— datos por completar —',url:'',stat1:{v:'—',l:'Views'},stat2:{v:'—',l:'Likes'},stat3:{v:'—',l:'Shares'}},
+      {tipo:'TikTok',badge:'tc-tiktok',desc:'— datos por completar —',url:'',stat1:{v:'—',l:'Views'},stat2:{v:'—',l:'Likes'},stat3:{v:'—',l:'Shares'}},
+      {tipo:'TikTok',badge:'tc-tiktok',desc:'— datos por completar —',url:'',stat1:{v:'—',l:'Views'},stat2:{v:'—',l:'Likes'},stat3:{v:'—',l:'Shares'}},
+    ],
+    feb:[
+      {tipo:'TikTok',badge:'tc-tiktok',desc:'— datos por completar —',url:'',stat1:{v:'—',l:'Views'},stat2:{v:'—',l:'Likes'},stat3:{v:'—',l:'Shares'}},
+      {tipo:'TikTok',badge:'tc-tiktok',desc:'— datos por completar —',url:'',stat1:{v:'—',l:'Views'},stat2:{v:'—',l:'Likes'},stat3:{v:'—',l:'Shares'}},
+      {tipo:'TikTok',badge:'tc-tiktok',desc:'— datos por completar —',url:'',stat1:{v:'—',l:'Views'},stat2:{v:'—',l:'Likes'},stat3:{v:'—',l:'Shares'}},
+    ],
+    mar:[
+      {tipo:'TikTok',badge:'tc-tiktok',desc:'— datos por completar —',url:'',stat1:{v:'—',l:'Views'},stat2:{v:'—',l:'Likes'},stat3:{v:'—',l:'Shares'}},
+      {tipo:'TikTok',badge:'tc-tiktok',desc:'— datos por completar —',url:'',stat1:{v:'—',l:'Views'},stat2:{v:'—',l:'Likes'},stat3:{v:'—',l:'Shares'}},
+      {tipo:'TikTok',badge:'tc-tiktok',desc:'— datos por completar —',url:'',stat1:{v:'—',l:'Views'},stat2:{v:'—',l:'Likes'},stat3:{v:'—',l:'Shares'}},
+    ]
+  }
+};
+
+function renderTopGrid(gridId, plat, m) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  const items = topContent[plat][m];
+  grid.innerHTML = items.map((item, i) => `
+    <div class="top-card">
+      <div class="tc-badge ${item.badge}" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>${item.tipo} · #${i+1}</span>
+        ${item.url ? `<a href="${item.url}" target="_blank" style="color:inherit;opacity:.6;font-size:10px;letter-spacing:1px;">Ver post →</a>` : ''}
+      </div>
+      <div class="tc-body">
+        <div class="tc-desc">${item.desc}</div>
+        <div class="tc-stats">
+          <div class="tc-stat"><div class="tsv">${item.stat1.v}</div><div class="tsl">${item.stat1.l}</div></div>
+          <div class="tc-stat"><div class="tsv">${item.stat2.v}</div><div class="tsl">${item.stat2.l}</div></div>
+          <div class="tc-stat"><div class="tsv">${item.stat3.v}</div><div class="tsl">${item.stat3.l}</div></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+/* ─── KPI RENDER ─── */
+function renderKPI(prefix, data) {
+  data.forEach((d,i) => {
+    const card = document.getElementById(`${prefix}-k${i}`);
+    card.className = 'kcard ' + (d.cls||'');
+    document.getElementById(`${prefix}-k${i}v`).textContent = d.v;
+    document.getElementById(`${prefix}-k${i}l`).textContent = d.l;
+    const chg = document.getElementById(`${prefix}-k${i}c`);
+    chg.textContent = d.c;
+    chg.className = 'kchg ' + (d.cc||'');
+  });
+}
+
+/* ─── NAV ─── */
+const curMonth = { ig:'ene', p:'ene', tt:'ene' };
+
+function showView(id, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'trim') initTrimCharts();
+  if (id === 'mensual') initMensualCharts();
+}
+
+function showTab(prefix, id, btn) {
+  const scope = btn.closest('.view');
+  scope.querySelectorAll('.pblock').forEach(b => b.classList.remove('active'));
+  scope.querySelectorAll('.pill').forEach(b => b.classList.remove('active'));
+  document.getElementById(prefix+'-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showMPlat(id, btn) {
+  document.querySelectorAll('#view-mensual .pblock').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#view-mensual .pill').forEach(b => b.classList.remove('active'));
+  document.getElementById('mp-'+id).classList.add('active');
+  btn.classList.add('active');
+  initMensualCharts();
+}
+
+function setMonth(plat, m, btn) {
+  curMonth[plat] = m;
+  btn.closest('.tab-row').querySelectorAll('.mpill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const dataMap = {ig:igKPI, p:pKPI, tt:ttKPI};
+  renderKPI(plat, dataMap[plat][m]);
+  highlightBar(plat, monthIdx[m]);
+  if (plat==='ig') renderTopGrid('ig-top-grid','ig',m);
+  if (plat==='tt') renderTopGrid('tt-top-grid','tt',m);
+}
+
+/* ─── CHARTS ─── */
+const NAV='#1a2b5e', GRN='#2a7d4f', AMB='#c97b2a';
+const inited = new Set();
+const ANIM = { animation:false };
+
+function barsRgba(hi, r, g, b) {
+  return [0,1,2].map(i => `rgba(${r},${g},${b},${i===hi?1:0.28})`);
+}
+
+const baseOpts = {
+  responsive:true, maintainAspectRatio:false, animation:false,
+  plugins:{ legend:{display:false} },
+  scales:{
+    x:{ grid:{display:false}, ticks:{font:{size:11},color:NAV} },
+    y:{ grid:{color:'rgba(26,43,94,0.07)'}, ticks:{font:{size:11},color:NAV} }
+  }
+};
+
+function mkBar(id, data, hi, r, g, b) {
+  const ctx = document.getElementById(id);
+  if (!ctx || inited.has(id)) return;
+  inited.add(id);
+  const ch = new Chart(ctx, {
+    type:'bar',
+    data:{ labels:MONTHS, datasets:[{ data, backgroundColor:barsRgba(hi,r,g,b), borderRadius:5, borderSkipped:false }] },
+    options:{...baseOpts}
+  });
+  ctx._ch = ch;
+}
+
+function mkLine(id, data, color) {
+  const ctx = document.getElementById(id);
+  if (!ctx || inited.has(id)) return;
+  inited.add(id);
+  ctx._ch = new Chart(ctx, {
+    type:'line',
+    data:{ labels:MONTHS, datasets:[{ data, borderColor:color, backgroundColor:color+'22', fill:true, tension:0.35, pointBackgroundColor:color, pointRadius:5 }] },
+    options:{...baseOpts}
+  });
+}
+
+function mkGroupBar(id, ds1, ds2, l1, l2, c1, c2) {
+  const ctx = document.getElementById(id);
+  if (!ctx || inited.has(id)) return;
+  inited.add(id);
+  ctx._ch = new Chart(ctx, {
+    type:'bar',
+    data:{ labels:MONTHS, datasets:[
+      {label:l1, data:ds1, backgroundColor:c1, borderRadius:3},
+      {label:l2, data:ds2, backgroundColor:c2, borderRadius:3}
+    ]},
+    options:{...baseOpts, plugins:{legend:{display:true, labels:{font:{size:10},color:NAV,boxWidth:10}}}}
+  });
+}
+
+function highlightBar(plat, hi) {
+  const map = {
+    ig: [['ig-views',26,125,79],['ig-int',26,43,94],['ig-seg',26,43,94]],
+    p:  [['p-inv',201,123,42],['p-clics',26,125,79]],
+    tt: [['tt-views',26,125,79],['tt-likes',26,43,94],['tt-seg',42,125,79]]
+  };
+  (map[plat]||[]).forEach(([id,r,g,b]) => {
+    const ctx = document.getElementById(id);
+    if (ctx && ctx._ch) { ctx._ch.data.datasets[0].backgroundColor=barsRgba(hi,r,g,b); ctx._ch.update(); }
+  });
+}
+
+function initTrimCharts() {
+  mkBar('trim-ig-views',[128020,178418,228534],2,26,125,79);
+  mkBar('trim-ig-int',  [1347,2710,4300],      2,26,43,94);
+  mkBar('trim-tt-views',[18592,9342,65243],     2,26,125,79);
+  mkBar('trim-p-clics', [2192,1299,2725],       2,201,123,42);
+}
+
+function initMensualCharts() {
+  const igHi=monthIdx[curMonth.ig], pHi=monthIdx[curMonth.p], ttHi=monthIdx[curMonth.tt];
+  mkBar('ig-views',[128020,178418,228534],igHi,26,125,79);
+  mkBar('ig-int',  [1347,2710,4300],      igHi,26,43,94);
+  mkLine('ig-reach',[73053,71585,65544],AMB);
+  mkBar('ig-seg',  [393,393,991],         igHi,26,43,94);
+  mkBar('p-inv',   [687926,158710,867607],pHi,201,123,42);
+  mkBar('p-clics', [2192,1299,2725],      pHi,26,125,79);
+  mkLine('p-ctr',  [1.96,0.69,2.20],GRN);
+  mkGroupBar('p-imp',[378424,246321,138853],[274098,174682,101568],'Impresiones','Alcance','rgba(26,43,94,0.75)','rgba(26,43,94,0.3)');
+  mkBar('tt-views',[18592,9342,65243],    ttHi,26,125,79);
+  mkBar('tt-likes',[580,533,1905],        ttHi,26,43,94);
+  mkBar('tt-seg',  [87,52,416],           ttHi,42,125,79);
+  mkGroupBar('tt-eng',[5,20,18],[5,7,11],'Shares','Comments','rgba(201,123,42,0.85)','rgba(26,43,94,0.5)');
+  renderKPI('ig',igKPI[curMonth.ig]);
+  renderKPI('p', pKPI[curMonth.p]);
+  renderKPI('tt',ttKPI[curMonth.tt]);
+  renderTopGrid('ig-top-grid','ig',curMonth.ig);
+  renderTopGrid('tt-top-grid','tt',curMonth.tt);
+}
+</script>
+</body>
+</html>
