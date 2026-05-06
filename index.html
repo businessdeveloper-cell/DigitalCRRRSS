@@ -196,11 +196,11 @@ footer { text-align:center; margin-top:60px; padding:24px; font-size:11px; opaci
 </div>
 
 <nav class="nav">
-  <button class="nav-btn active" onclick="showView('anual',this)">Objetivos Anuales</button>
-  <button class="nav-btn" onclick="showView('trim',this)">Trimestral</button>
+  <button class="nav-btn active" onclick="showView('anual',this)">KPIs Anual</button>
   <button class="nav-btn" onclick="showView('mensual',this)">Mensual</button>
   <button class="nav-btn" onclick="showView('fidel',this)">Fidelización</button>
-  <button class="nav-btn" onclick="showView('mayo',this)" style="color:#c97b2a;opacity:1;font-weight:bold;">Plan Mayo →</button>
+  <button class="nav-btn" onclick="showView('trim',this)">Trimestral Q1</button>
+  <button class="nav-btn" onclick="showView('conclusiones',this)">Conclusiones</button>
 </nav>
 
 <div class="main">
@@ -259,7 +259,36 @@ footer { text-align:center; margin-top:60px; padding:24px; font-size:11px; opaci
     </div>
   </div>
   <div id="ap-pauta" class="pblock">
-    <div style="font-size:12px;opacity:.5;margin-bottom:14px;">Las metas de pauta son mensuales. Datos al cierre de abril. Metas Q2 ajustadas por el cambio de estrategia de alcance → conversión.</div>
+    <div style="font-size:12px;opacity:.5;margin-bottom:16px;">Las metas de pauta son mensuales. Datos al cierre de abril. Metas Q2 ajustadas por el cambio de estrategia de alcance → conversión.</div>
+
+    <!-- Pauta goal donuts — abril vs meta mensual -->
+    <div class="goal-row">
+      <div class="goal-card">
+        <div class="gc-wrap"><canvas id="goal-p-alc"></canvas><div class="gc-pct" style="color:#2a7d4f;">✓</div></div>
+        <div class="gc-label">Alcance · Abril</div>
+        <div class="gc-val">387.982</div>
+        <div class="gc-target">Meta: 130K–160K · superado</div>
+      </div>
+      <div class="goal-card">
+        <div class="gc-wrap"><canvas id="goal-p-clic"></canvas><div class="gc-pct" style="color:#c97b2a;">59%</div></div>
+        <div class="gc-label">Clics · Abril</div>
+        <div class="gc-val">1.920</div>
+        <div class="gc-target">Meta: 3.000–3.500</div>
+      </div>
+      <div class="goal-card">
+        <div class="gc-wrap"><canvas id="goal-p-ctr"></canvas><div class="gc-pct" style="color:#c0392b;">18%</div></div>
+        <div class="gc-label">CTR · Abril</div>
+        <div class="gc-val">0,37%</div>
+        <div class="gc-target">Meta: 1,8%–2,3%</div>
+      </div>
+      <div class="goal-card">
+        <div class="gc-wrap"><canvas id="goal-p-cpc"></canvas><div class="gc-pct" style="color:#c0392b;">46%</div></div>
+        <div class="gc-label">Eficiencia CPC</div>
+        <div class="gc-val">$594 COP</div>
+        <div class="gc-target">Meta: $250–300 · optimizar</div>
+      </div>
+    </div>
+
     <table class="tbl" style="margin-bottom:16px;">
       <thead><tr><th>Métrica</th><th>Meta original 2026</th><th>Abril real</th><th>Estado</th><th>Meta Q2 ajustada</th></tr></thead>
       <tbody>
@@ -273,7 +302,36 @@ footer { text-align:center; margin-top:60px; padding:24px; font-size:11px; opaci
     </table>
   </div>
   <div id="ap-tt" class="pblock">
-    <div style="font-size:12px;opacity:.5;margin-bottom:14px;">Acumulado a Abril 2026 · incluye orgánico Q1 + orgánico y ads de abril.</div>
+    <div style="font-size:12px;opacity:.5;margin-bottom:16px;">Acumulado a Abril 2026 · incluye orgánico Q1 + orgánico y ads de abril.</div>
+
+    <!-- TikTok goal donuts — acumulado vs meta anual -->
+    <div class="goal-row">
+      <div class="goal-card">
+        <div class="gc-wrap"><canvas id="goal-tt-views"></canvas><div class="gc-pct" style="color:#c97b2a;">46%</div></div>
+        <div class="gc-label">Views orgánico</div>
+        <div class="gc-val">150.811</div>
+        <div class="gc-target">Meta anual: 240K–420K</div>
+      </div>
+      <div class="goal-card">
+        <div class="gc-wrap"><canvas id="goal-tt-likes"></canvas><div class="gc-pct" style="color:#c97b2a;">37%</div></div>
+        <div class="gc-label">Likes acumulados</div>
+        <div class="gc-val">3.542</div>
+        <div class="gc-target">Meta anual: 7.200–12.000</div>
+      </div>
+      <div class="goal-card">
+        <div class="gc-wrap"><canvas id="goal-tt-seg"></canvas><div class="gc-pct" style="color:#2a7d4f;">61%</div></div>
+        <div class="gc-label">Seguidores nuevos</div>
+        <div class="gc-val">837</div>
+        <div class="gc-target">Meta anual: 960–1.800</div>
+      </div>
+      <div class="goal-card">
+        <div class="gc-wrap"><canvas id="goal-tt-shr"></canvas><div class="gc-pct" style="color:#c0392b;">21%</div></div>
+        <div class="gc-label">Shares acumulados</div>
+        <div class="gc-val">51</div>
+        <div class="gc-target">Meta anual: 180–300</div>
+      </div>
+    </div>
+
     <table class="tbl" style="margin-bottom:16px;">
       <thead><tr><th>Métrica</th><th>Meta anual 2026</th><th>Logrado (Ene–Abr)</th><th>Avance</th><th>Nueva meta Q2 (May–Jun)</th></tr></thead>
       <tbody>
@@ -291,20 +349,21 @@ footer { text-align:center; margin-top:60px; padding:24px; font-size:11px; opaci
 
 <!-- ═══════ TRIMESTRAL ═══════ -->
 <div id="view-trim" class="view">
-  <div class="slabel">Wins del trimestre</div>
+  <div style="font-size:12px;opacity:.5;margin-bottom:18px;">Resumen de Q1 cerrado · Enero – Marzo 2026 · 3 meses completos</div>
+  <div class="slabel">Wins del Q1</div>
   <div class="wins-grid">
-    <div class="win-card"><div class="wnum">11.089</div><div class="wlabel">Seguidores en Instagram</div><div class="wsub">Meta anual alcanzada en solo 4 meses</div></div>
+    <div class="win-card"><div class="wnum">10.462</div><div class="wlabel">Seguidores al cierre Q1 (Marzo)</div><div class="wsub">+1.384 nuevos en Q1 · ritmo de +461/mes</div></div>
     <div class="win-card"><div class="wnum">8.357</div><div class="wlabel">Interacciones acumuladas Q1</div><div class="wsub">81% de la meta anual en solo 3 meses</div></div>
-    <div class="win-card"><div class="wnum">+700%</div><div class="wlabel">Seguidores nuevos en TikTok (marzo)</div><div class="wsub">+598% en views · canal con tracción real</div></div>
+    <div class="win-card"><div class="wnum">+700%</div><div class="wlabel">Seguidores nuevos en TikTok (Marzo)</div><div class="wsub">+598% en views · canal con tracción real</div></div>
   </div>
-  <div class="slabel" style="margin-top:28px;">Evolución visual Q1</div>
+  <div class="slabel" style="margin-top:28px;">Evolución visual · Enero – Marzo 2026</div>
   <div class="trim-charts">
-    <div class="trim-cbox"><div class="ctitle">Instagram — Views mensuales</div><div class="chart-wrap"><canvas id="trim-ig-views"></canvas></div></div>
-    <div class="trim-cbox"><div class="ctitle">Instagram — Interacciones mensuales</div><div class="chart-wrap"><canvas id="trim-ig-int"></canvas></div></div>
-    <div class="trim-cbox"><div class="ctitle">TikTok — Views mensuales</div><div class="chart-wrap"><canvas id="trim-tt-views"></canvas></div></div>
-    <div class="trim-cbox"><div class="ctitle">Pauta Meta — Clics mensuales</div><div class="chart-wrap"><canvas id="trim-p-clics"></canvas></div></div>
+    <div class="trim-cbox"><div class="ctitle">Instagram — Views · Ene–Mar</div><div class="chart-wrap"><canvas id="trim-ig-views"></canvas></div></div>
+    <div class="trim-cbox"><div class="ctitle">Instagram — Interacciones · Ene–Mar</div><div class="chart-wrap"><canvas id="trim-ig-int"></canvas></div></div>
+    <div class="trim-cbox"><div class="ctitle">TikTok — Views · Ene–Mar</div><div class="chart-wrap"><canvas id="trim-tt-views"></canvas></div></div>
+    <div class="trim-cbox"><div class="ctitle">Pauta Meta — Clics · Ene–Mar</div><div class="chart-wrap"><canvas id="trim-p-clics"></canvas></div></div>
   </div>
-  <div class="slabel">Análisis por plataforma + proyección próximo trimestre</div>
+  <div class="slabel">Análisis por plataforma · cierre Q1</div>
   <div class="q-plat">
     <h3>Instagram</h3>
     <div class="q-plat-body">
@@ -316,7 +375,7 @@ footer { text-align:center; margin-top:60px; padding:24px; font-size:11px; opaci
         <div class="q-stat" style="color:#c97b2a;">Reach lleva 3 meses cayendo: 73K → 71K → 65K. El alcance orgánico se contrae.</div>
       </div>
       <div class="q-col">
-        <h4>Foco para el próximo trimestre</h4>
+        <h4>Señales clave para Q2</h4>
         <div class="q-stat">Recuperar reach orgánico — más Reels con buen hook, mínimo 4 posts/mes en feed.</div>
         <div class="q-stat">Mantener el ritmo de interacciones: meta Q2 de 3.500–4.000/mes.</div>
         <div class="q-stat">Views objetivo próximo trimestre: 230K–250K/mes para estar en ritmo anual.</div>
@@ -335,7 +394,7 @@ footer { text-align:center; margin-top:60px; padding:24px; font-size:11px; opaci
         <div class="q-stat" style="color:#c97b2a;">Pauta gestionada desde "Promocionar" en app, sin estrategia en Meta Ads Manager.</div>
       </div>
       <div class="q-col">
-        <h4>Foco para el próximo trimestre</h4>
+        <h4>Señales clave para Q2</h4>
         <div class="q-stat">Migrar a Meta Ads Manager — control real de segmentación y presupuesto.</div>
         <div class="q-stat">Objetivo de CPC: bajar a 250–300 COP.</div>
         <div class="q-stat">Estabilizar inversión mensual en 180K–220K COP.</div>
@@ -354,7 +413,7 @@ footer { text-align:center; margin-top:60px; padding:24px; font-size:11px; opaci
         <div class="q-stat" style="color:#c97b2a;">Shares se mantienen bajos — poca capacidad de viralización.</div>
       </div>
       <div class="q-col">
-        <h4>Foco para el próximo trimestre</h4>
+        <h4>Señales clave para Q2</h4>
         <div class="q-stat">Identificar qué generó el spike de marzo y replicarlo de forma consistente.</div>
         <div class="q-stat">Meta de views próximo trimestre: 20.000–35.000/mes de forma estable.</div>
         <div class="q-stat">Fortalecer la estrategia de shares — contenido que invite a compartir.</div>
@@ -647,15 +706,201 @@ footer { text-align:center; margin-top:60px; padding:24px; font-size:11px; opaci
   </div>
 </div>
 
-<!-- ═══════ PLAN MAYO ═══════ -->
-<div id="view-mayo" class="view">
-  <div class="plan-intro">
-    <div>
-      <div class="pi-title">Plan de Acción · Mayo 2026</div>
-      <div class="pi-sub" style="margin-top:4px;">Basado en los datos de Abril · Prioridades por plataforma</div>
-    </div>
-    <div style="font-size:11px;opacity:.5;letter-spacing:2px;text-transform:uppercase;">Q2 · Semana 1–4</div>
+<!-- ═══════ CONCLUSIONES ═══════ -->
+<div id="view-conclusiones" class="view">
+
+  <div style="font-size:12px;opacity:.5;margin-bottom:18px;">Aprendizajes mensuales + plan de acción definido para el mes siguiente · tracking estratégico de ejecución</div>
+
+  <div class="tab-row" style="margin-bottom:24px;">
+    <button class="mpill active" onclick="setConclusionMonth('ene',this)">Enero</button>
+    <button class="mpill" onclick="setConclusionMonth('feb',this)">Febrero</button>
+    <button class="mpill" onclick="setConclusionMonth('mar',this)">Marzo</button>
+    <button class="mpill" onclick="setConclusionMonth('abr',this)">Abril</button>
+    <button class="mpill" onclick="setConclusionMonth('mayo',this)" style="border-color:rgba(26,43,94,.35);font-weight:bold;">Plan Mayo ›</button>
   </div>
+
+  <!-- ══ ENERO ══ -->
+  <div id="concl-ene" class="pblock active">
+    <div class="plan-intro" style="margin-bottom:20px;">
+      <div>
+        <div class="pi-title">Enero 2026 · Resultados + Aprendizajes</div>
+        <div class="pi-sub">Primer mes con datos completos · Base de inicio del año</div>
+      </div>
+      <div style="text-align:right;font-size:10px;opacity:.5;letter-spacing:2px;text-transform:uppercase;">→ Plan para Febrero</div>
+    </div>
+    <div class="krow k4" style="margin-bottom:18px;">
+      <div class="kcard"><div class="kval">9.078</div><div class="klbl">Seguidores IG</div><div class="kchg chg-neu">Base de inicio</div></div>
+      <div class="kcard"><div class="kval">128K</div><div class="klbl">Views IG</div><div class="kchg chg-neu">46,9% origen pauta</div></div>
+      <div class="kcard warn"><div class="kval">1.347</div><div class="klbl">Interacciones</div><div class="kchg chg-warn">Bajo — contenido sin gancho</div></div>
+      <div class="kcard up"><div class="kval">1,96%</div><div class="klbl">CTR Pauta</div><div class="kchg chg-up">Buen arranque</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+      <div class="fidel-section" style="margin-bottom:0;">
+        <h3>✓ Qué funcionó</h3>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div>Pauta con CTR sólido del 1,96% — segmentación inicial efectiva para visibilidad de marca.</div></div>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div>Instagram arrancó con 128K views en el primer mes — buen volumen base para una cuenta nueva con datos.</div></div>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div>WiFi activado y base de datos construyéndose (60 visitantes únicos registrados).</div></div>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div style="border:none;">TikTok con 18.592 views en el arranque — potencial sin explotar.</div></div>
+      </div>
+      <div class="fidel-section" style="margin-bottom:0;">
+        <h3>⚠ Qué mejorar</h3>
+        <div class="plan-action"><div class="pa-dot"></div><div>Interacciones muy bajas (1.347) — el contenido generaba views pero no invitaba a reaccionar, guardar ni comentar.</div></div>
+        <div class="plan-action"><div class="pa-dot"></div><div>Pauta con inversión muy alta ($687K COP) sin ritmo definido — riesgo de gasto no sostenible.</div></div>
+        <div class="plan-action"><div class="pa-dot"></div><div>TikTok sin patrón claro — 18K views pero sin identificar qué formato funciona para el canal.</div></div>
+        <div class="plan-action"><div class="pa-dot"></div><div style="border:none;">Reach de Instagram sin benchmarks todavía — necesita más meses para evaluar tendencia.</div></div>
+      </div>
+    </div>
+    <div class="fidel-section">
+      <h3>Plan definido para Febrero · acciones estratégicas</h3>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div><strong>Contenido IG:</strong> Probar carruseles educativos que inviten a guardar y formatos de pregunta en Stories — objetivo subir interacciones a 2.500+.</div></div>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div><strong>TikTok:</strong> Subir frecuencia a 3 videos/semana y experimentar con audio trending sobre proceso de café y behind the scenes.</div></div>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div><strong>Pauta:</strong> Ajustar a rango más controlado ($150K–$250K COP) con objetivo de mantener CTR >1,5%. Reducir campañas de bajo desempeño.</div></div>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div style="border:none;"><strong>Fiwex:</strong> Promover activamente la conexión WiFi en el punto de venta para crecer la base de datos de clientes.</div></div>
+    </div>
+  </div>
+
+  <!-- ══ FEBRERO ══ -->
+  <div id="concl-feb" class="pblock">
+    <div class="plan-intro" style="margin-bottom:20px;">
+      <div>
+        <div class="pi-title">Febrero 2026 · Resultados + Aprendizajes</div>
+        <div class="pi-sub">Interacciones se dispararon · WiFi explotó · Pauta en mínimo</div>
+      </div>
+      <div style="text-align:right;font-size:10px;opacity:.5;letter-spacing:2px;text-transform:uppercase;">→ Plan para Marzo</div>
+    </div>
+    <div class="krow k4" style="margin-bottom:18px;">
+      <div class="kcard up"><div class="kval">+393</div><div class="klbl">Seguidores nuevos</div><div class="kchg chg-up">9.471 total (+4,3%)</div></div>
+      <div class="kcard up"><div class="kval">2.710</div><div class="klbl">Interacciones</div><div class="kchg chg-up">+101,2% vs enero</div></div>
+      <div class="kcard down"><div class="kval">0,69%</div><div class="klbl">CTR Pauta</div><div class="kchg chg-down">Peor del trimestre · $158K</div></div>
+      <div class="kcard up"><div class="kval">523</div><div class="klbl">Conexiones WiFi</div><div class="kchg chg-up">+523% vs enero</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+      <div class="fidel-section" style="margin-bottom:0;">
+        <h3>✓ Qué funcionó</h3>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div>Interacciones se duplicaron (+101%) — el contenido de febrero conectó mucho mejor que enero con la audiencia.</div></div>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div>Seguidores nuevos (+393) — aceleración de crecimiento sostenida mes a mes.</div></div>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div>Fiwex explotó de 84 a 523 conexiones (+523%) — el local captó tráfico masivo, incluyendo turismo internacional.</div></div>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div style="border:none;">Views de IG crecieron +39,4% (178K) — buen ritmo orgánico sin depender de pauta alta.</div></div>
+      </div>
+      <div class="fidel-section" style="margin-bottom:0;">
+        <h3>⚠ Qué mejorar</h3>
+        <div class="plan-action"><div class="pa-dot"></div><div>Pauta colapsó: $158K de inversión (mínimo del trimestre) con CTR de 0,69% — el peor mes de eficiencia publicitaria.</div></div>
+        <div class="plan-action"><div class="pa-dot"></div><div>TikTok cayó -49% en views (9.342) — sin publicar con consistencia, el algoritmo penalizó la cuenta.</div></div>
+        <div class="plan-action"><div class="pa-dot"></div><div>Reach orgánico de IG comenzó a caer (-2% vs enero) — señal temprana de que el alcance sin pauta se contrae.</div></div>
+        <div class="plan-action"><div class="pa-dot"></div><div style="border:none;">Sin programa de fidelización todavía — los 368 visitantes únicos WiFi no tienen forma de volver incentivados.</div></div>
+      </div>
+    </div>
+    <div class="fidel-section">
+      <h3>Plan definido para Marzo · acciones estratégicas</h3>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div><strong>Pauta:</strong> Recuperar inversión a rango $400K–$900K COP con mejor segmentación. Objetivo: CTR >1,5% y CPC <$300 COP.</div></div>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div><strong>TikTok:</strong> Publicar mínimo 3 videos/semana con consistencia — identificar 2-3 formatos base (proceso, varietales, behind the scenes) y rotarlos.</div></div>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div><strong>Fidelización:</strong> Lanzar programa Passtastic — aprovechar la base WiFi de 368+ visitantes únicos acumulados para activar el loyalty.</div></div>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div><strong>Contenido IG:</strong> Mantener el tono de febrero que generó +101% interacciones. Agregar más formato carrusel y Reels de exploración de café.</div></div>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div style="border:none;"><strong>Meta seguidores:</strong> Llegar a 10.000 seguidores cerrando marzo — el primer hito psicológico clave.</div></div>
+    </div>
+  </div>
+
+  <!-- ══ MARZO ══ -->
+  <div id="concl-mar" class="pblock">
+    <div class="plan-intro" style="margin-bottom:20px;">
+      <div>
+        <div class="pi-title">Marzo 2026 · Resultados + Aprendizajes</div>
+        <div class="pi-sub">Mejor mes del año · Viral en TikTok · Passtastic lanzado</div>
+      </div>
+      <div style="text-align:right;font-size:10px;opacity:.5;letter-spacing:2px;text-transform:uppercase;">→ Plan para Abril</div>
+    </div>
+    <div class="krow k4" style="margin-bottom:18px;">
+      <div class="kcard up"><div class="kval">+991</div><div class="klbl">Seguidores nuevos</div><div class="kchg chg-up">10.462 total (+10,5%)</div></div>
+      <div class="kcard up"><div class="kval">4.300</div><div class="klbl">Interacciones</div><div class="kchg chg-up">+58,7% — récord del año</div></div>
+      <div class="kcard up"><div class="kval">65.243</div><div class="klbl">Views TikTok</div><div class="kchg chg-up">+598% · viral</div></div>
+      <div class="kcard up"><div class="kval">41</div><div class="klbl">Miembros Passtastic</div><div class="kchg chg-up">Lanzamiento · 96% retorno</div></div>
+    </div>
+    <div class="fidel-section" style="margin-bottom:14px;background:rgba(42,125,79,0.06);border-left:3px solid #2a7d4f;">
+      <h3 style="color:#2a7d4f;">🏆 Mejor mes del año en todas las métricas</h3>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;font-size:13px;line-height:1.55;">
+        <div><strong>Instagram:</strong> Seguidores casi llegaron a 10.500. Interacciones récord (4.300). Pauta con mejor CTR del trimestre (2,20%).</div>
+        <div><strong>TikTok:</strong> Video viral generó +598% en views y +700% en seguidores nuevos. El formato de exploración/varietales fue el trigger.</div>
+        <div><strong>Fidelización:</strong> Passtastic lanzado con éxito. 41 miembros en el primer mes y 96% tasa de retorno — el programa tiene potencial real.</div>
+        <div><strong>Fiwex:</strong> 615 conexiones y 393 visitantes únicos. Perfil femenino creciente (60,1%). El local tiene una audiencia muy definida.</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+      <div class="fidel-section" style="margin-bottom:0;">
+        <h3>✓ Qué funcionó</h3>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div>Contenido de exploración y varietales funcionó tanto en IG (top 3 posts) como en TikTok (video viral). El ángulo "descubrimiento" resuena.</div></div>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div>Pauta recuperada a $867K con CTR 2,20% — mejor relación inversión/eficiencia del trimestre.</div></div>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div>Passtastic lanzado — 41 miembros en la primera semana, con 57,1% ya en proceso de fidelización activa.</div></div>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div style="border:none;">Ritmo de publicación en TikTok se mantuvo — el algoritmo respondió amplificando el video correcto.</div></div>
+      </div>
+      <div class="fidel-section" style="margin-bottom:0;">
+        <h3>⚠ Qué mejorar</h3>
+        <div class="plan-action"><div class="pa-dot"></div><div>Reach orgánico de IG sigue cayendo (-8,4% vs febrero) — el alcance sin pagar se contrae a pesar del crecimiento en todo lo demás.</div></div>
+        <div class="plan-action"><div class="pa-dot"></div><div>El viral de TikTok fue puntual, no sistemático — se desconoce exactamente qué combinación de factores lo generó (hook, audio, timing).</div></div>
+        <div class="plan-action"><div class="pa-dot"></div><div>42 cupones Passtastic emitidos y 0 canjeados — el programa existe pero los clientes no saben cómo usar su beneficio.</div></div>
+        <div class="plan-action"><div class="pa-dot"></div><div style="border:none;">CPC de pauta subió a $340 COP — por encima del objetivo de $250–300.</div></div>
+      </div>
+    </div>
+    <div class="fidel-section">
+      <h3>Plan definido para Abril · acciones estratégicas</h3>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div><strong>TikTok — replicar el viral:</strong> Analizar el video de marzo en detalle (duración, hook primeros 3 seg, audio, topic). Producir 2-3 piezas con ese formato base en abril.</div></div>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div><strong>Passtastic — activar cupones:</strong> Enviar email a los 41 miembros con instrucciones claras de canje. Agregar cartel en punto de venta. Objetivo: primer canje en abril.</div></div>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div><strong>IG — mantener momentum:</strong> 4 Reels mínimo en abril, 2 de ellos con el ángulo de exploración/varietales que funcionó. Stories con preguntas 2x/semana.</div></div>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div><strong>Pauta — objetivo:</strong> Mantener en rango $500K–$900K. Cambiar campañas de "alcance" puro a "engagement" para no perder interacciones como pasó en enero.</div></div>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div style="border:none;"><strong>Meta seguidores:</strong> Llegar a 11.000 en abril — la meta anual original. Está al alcance con el ritmo actual.</div></div>
+    </div>
+  </div>
+
+  <!-- ══ ABRIL ══ -->
+  <div id="concl-abr" class="pblock">
+    <div class="plan-intro" style="margin-bottom:20px;">
+      <div>
+        <div class="pi-title">Abril 2026 · Resultados + Aprendizajes</div>
+        <div class="pi-sub">Meta anual de seguidores alcanzada · Interacciones caen · Pauta ineficiente</div>
+      </div>
+      <div style="text-align:right;font-size:10px;opacity:.5;letter-spacing:2px;text-transform:uppercase;">→ Plan para Mayo</div>
+    </div>
+    <div class="krow k4" style="margin-bottom:18px;">
+      <div class="kcard up"><div class="kval">11.089</div><div class="klbl">Seguidores · META ✓</div><div class="kchg chg-up">+627 nuevos · meta anual en 4 meses</div></div>
+      <div class="kcard up"><div class="kval">301K</div><div class="klbl">Views IG</div><div class="kchg chg-up">+31,9% vs marzo</div></div>
+      <div class="kcard down"><div class="kval">2.755</div><div class="klbl">Interacciones</div><div class="kchg chg-down">-35,9% vs marzo · señal de alerta</div></div>
+      <div class="kcard down"><div class="kval">0,37%</div><div class="klbl">CTR Pauta</div><div class="kchg chg-down">Mínimo histórico · $1,14M inv.</div></div>
+    </div>
+    <div class="plan-alert" style="margin-bottom:14px;">📊 La pauta de alcance masivo de abril generó muchas impresiones (520K) pero audiencia fría que no interactúa. Más reach no es más engagement — esa es la lección central de abril.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+      <div class="fidel-section" style="margin-bottom:0;">
+        <h3>✓ Qué funcionó</h3>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div>Meta anual de seguidores alcanzada con 4 meses de anticipación (11.089 vs meta 11.000) — el crecimiento orgánico se sostuvo.</div></div>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div>Views de IG en +31,9% — el contenido sigue generando visualizaciones en crecimiento mes a mes.</div></div>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div>Passtastic creció a 50 miembros (+22% vs marzo) y 37 recurrentes — el programa tiene retención real (97,4%).</div></div>
+        <div class="plan-action"><div class="pa-dot" style="background:#2a7d4f;"></div><div style="border:none;">TikTok Ads (TIMO) con CPM de $183 CRC — mucho más eficiente que la campaña Punk ($907 CPM).</div></div>
+      </div>
+      <div class="fidel-section" style="margin-bottom:0;">
+        <h3>⚠ Qué mejorar</h3>
+        <div class="plan-action"><div class="pa-dot"></div><div>Interacciones cayeron -35,9%: la pauta de alcance trajo audiencia fría que no reacciona. El CTR de 0,37% con $1,14M es ineficiente.</div></div>
+        <div class="plan-action"><div class="pa-dot"></div><div>TikTok orgánico vive de la inercia del viral de marzo: 58% de las views (33K de 57K) fueron en los primeros 4 días de abril solamente.</div></div>
+        <div class="plan-action"><div class="pa-dot"></div><div>0 cupones canjeados de 93 emitidos (42 mar + 51 abr) — el programa Passtastic tiene miembros pero ninguno usa su beneficio.</div></div>
+        <div class="plan-action"><div class="pa-dot"></div><div style="border:none;">CPC de pauta en $594 COP (+74% vs marzo) — muy por encima del rango objetivo de $250–$300.</div></div>
+      </div>
+    </div>
+    <div class="fidel-section">
+      <h3>Plan definido para Mayo · acciones estratégicas</h3>
+      <div class="plan-action"><div class="pa-dot" style="background:#c0392b;"></div><div><strong>🚨 Urgente — Activar cupones Passtastic:</strong> Email + notificación WiFi en semana 1 con "Tu cupón está listo — canjéalo esta semana". Fecha límite visible. Objetivo: primer canje.</div></div>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div><strong>Pauta — cambiar objetivo:</strong> De "Alcance" a "Engagement" o "Tráfico al perfil". Comprimir inversión a $180K–$220K COP. Meta CTR: ≥1,5%.</div></div>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div><strong>Instagram — recuperar interacciones:</strong> 4 Reels con formato exploración/varietales (los que generaron 36 saves en marzo). Stories con preguntas 2x/semana.</div></div>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div><strong>TikTok — consistencia:</strong> 3 videos/semana (12 en mayo). Continuar solo campaña TIMO ($183 CPM). Analizar el viral de marzo y replicar su estructura.</div></div>
+      <div class="plan-action"><div class="pa-dot" style="background:#1a2b5e;"></div><div style="border:none;"><strong>Meta seguidores Q2:</strong> Cerrar mayo en ~11.500 (natural a +400/mes). Objetivo junio: 12.000 — requiere mantener ritmo actual.</div></div>
+    </div>
+  </div>
+
+  <!-- ══ PLAN MAYO (forward-looking) ══ -->
+  <div id="concl-mayo" class="pblock">
+    <div class="plan-intro" style="margin-bottom:20px;">
+      <div>
+        <div class="pi-title">Plan de Acción · Mayo 2026</div>
+        <div class="pi-sub">Basado en los datos de Abril · Prioridades por plataforma</div>
+      </div>
+      <div style="font-size:11px;opacity:.5;letter-spacing:2px;text-transform:uppercase;">Q2 · Semana 1–4</div>
+    </div>
 
   <div class="plan-grid">
 
@@ -745,7 +990,7 @@ footer { text-align:center; margin-top:60px; padding:24px; font-size:11px; opaci
 
   </div><!-- /plan-grid -->
 
-  <!-- RESUMEN EJECUTIVO -->
+  <!-- RESUMEN EJECUTIVO MAYO -->
   <div class="fidel-section" style="margin-top:4px;">
     <h3>Resumen ejecutivo · Mayo 2026</h3>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
@@ -767,7 +1012,8 @@ footer { text-align:center; margin-top:60px; padding:24px; font-size:11px; opaci
       </div>
     </div>
   </div>
-</div>
+  </div><!-- /concl-mayo pblock -->
+</div><!-- /view-conclusiones -->
 
 <footer>Libertario Coffee Co. & Roasters · Costa Rica · Ene–Abr 2026</footer>
 </div>
@@ -926,7 +1172,7 @@ function showView(id, btn) {
   if (id==='mensual') initMensualCharts();
   if (id==='fidel') renderFidel(curFidelMonth);
   if (id==='anual') initGoalDonuts();
-  if (id==='mayo') {} // static content
+  if (id==='conclusiones') {} // static content
 }
 
 /* ─── GOAL DONUTS (Objetivos Anuales) ─── */
@@ -954,10 +1200,21 @@ function mkDonut(id, pct, clampTo100, color) {
 }
 
 function initGoalDonuts() {
-  mkDonut('goal-seg',   92,  true,  '#2a7d4f');
-  mkDonut('goal-int',   100, true,  '#2a7d4f');
-  mkDonut('goal-reach', 47,  false, '#c97b2a');
-  mkDonut('goal-views', 32,  false, '#c0392b');
+  // Instagram
+  mkDonut('goal-seg',    92,  true,  '#2a7d4f');
+  mkDonut('goal-int',    100, true,  '#2a7d4f');
+  mkDonut('goal-reach',  47,  false, '#c97b2a');
+  mkDonut('goal-views',  32,  false, '#c0392b');
+  // Pauta Meta (abril vs meta mensual)
+  mkDonut('goal-p-alc',  100, true,  '#2a7d4f');   // exceeded → cap at 100%
+  mkDonut('goal-p-clic', 59,  false, '#c97b2a');
+  mkDonut('goal-p-ctr',  18,  false, '#c0392b');
+  mkDonut('goal-p-cpc',  46,  false, '#c0392b');
+  // TikTok (acumulado vs meta anual)
+  mkDonut('goal-tt-views', 46, false, '#c97b2a');
+  mkDonut('goal-tt-likes', 37, false, '#c97b2a');
+  mkDonut('goal-tt-seg',   61, false, '#2a7d4f');
+  mkDonut('goal-tt-shr',   21, false, '#c0392b');
 }
 
 function showTab(prefix, id, btn) {
@@ -1002,11 +1259,11 @@ const baseOpts = {
   }
 };
 
-function mkBar(id, data, hi, r, g, b) {
+function mkBar(id, data, hi, r, g, b, labels) {
   const ctx = document.getElementById(id);
   if (!ctx||inited.has(id)) return;
   inited.add(id);
-  ctx._ch = new Chart(ctx, { type:'bar', data:{ labels:MONTHS, datasets:[{ data, backgroundColor:barsRgba(hi,r,g,b), borderRadius:4, borderSkipped:false }] }, options:{...baseOpts} });
+  ctx._ch = new Chart(ctx, { type:'bar', data:{ labels: labels||MONTHS, datasets:[{ data, backgroundColor:barsRgba(hi,r,g,b), borderRadius:4, borderSkipped:false }] }, options:{...baseOpts} });
 }
 
 function mkLine(id, data, color) {
@@ -1035,11 +1292,12 @@ function highlightBar(plat, hi) {
   });
 }
 
+const Q1 = ['Enero','Febrero','Marzo'];
 function initTrimCharts() {
-  mkBar('trim-ig-views',[128020,178418,228534,301546],2,26,125,79);
-  mkBar('trim-ig-int',  [1347,2710,4300,2755],        2,26,43,94);
-  mkBar('trim-tt-views',[18592,9342,65243,57634],      2,26,125,79);
-  mkBar('trim-p-clics', [2192,1299,2725,1920],         2,201,123,42);
+  mkBar('trim-ig-views',[128020,178418,228534], 2, 26,125,79,  Q1);
+  mkBar('trim-ig-int',  [1347,2710,4300],       2, 26,43,94,   Q1);
+  mkBar('trim-tt-views',[18592,9342,65243],      2, 26,125,79,  Q1);
+  mkBar('trim-p-clics', [2192,1299,2725],        2, 201,123,42, Q1);
 }
 
 function initMensualCharts() {
@@ -1419,6 +1677,13 @@ function setFidelMonth(m, btn) {
   btn.classList.add('active');
   if (fidelGrowthChart) { fidelGrowthChart.destroy(); fidelGrowthChart = null; }
   renderFidel(m);
+}
+
+function setConclusionMonth(m, btn) {
+  document.querySelectorAll('#view-conclusiones .pblock').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#view-conclusiones .mpill').forEach(b => b.classList.remove('active'));
+  document.getElementById('concl-'+m).classList.add('active');
+  btn.classList.add('active');
 }
 
 /* ─── INIT ─── */
